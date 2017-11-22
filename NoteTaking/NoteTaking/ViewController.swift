@@ -13,6 +13,7 @@ class ViewController: UIViewController, UITableViewDataSource {
     @IBOutlet weak var table: UITableView!
     
     var data: [String] = []
+    var file: String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +28,10 @@ class ViewController: UIViewController, UITableViewDataSource {
         
         // Edit Button Item
         self.navigationItem.leftBarButtonItem = editButtonItem
+        
+        // Saving on the File
+        let docsDir = NSSearchPathForDirectoriesInDomains(.documentDirectory, .allDomainsMask, true)
+        file = docsDir[0].appending("notes.txt")
         
         // Loading data
         load()
@@ -63,14 +68,23 @@ class ViewController: UIViewController, UITableViewDataSource {
     
     func save() {
         // UserDefaults
-        UserDefaults.standard.set(data, forKey: "Notes")
-        UserDefaults.standard.synchronize()
+        //UserDefaults.standard.set(data, forKey: "Notes")
+        //UserDefaults.standard.synchronize()
+        
+        // File
+        let newData: NSArray = NSArray(array: data)
+        newData.write(toFile: file, atomically: true)
         
     }
     
     func load() {
         // UserDefaults
-        if let loadedData = UserDefaults.standard.value(forKey: "Notes") as? [String] {
+        //if let loadedData = UserDefaults.standard.value(forKey: "Notes") as? [String] {
+        //    data = loadedData
+        //    table.reloadData()
+        //}
+        
+        if let loadedData = NSArray(contentsOfFile: file) as? [String] {
             data = loadedData
             table.reloadData()
         }
@@ -90,7 +104,6 @@ class ViewController: UIViewController, UITableViewDataSource {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
 
 }
 
