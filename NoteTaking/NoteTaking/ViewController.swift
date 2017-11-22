@@ -27,11 +27,13 @@ class ViewController: UIViewController, UITableViewDataSource {
         
         // Edit Button Item
         self.navigationItem.leftBarButtonItem = editButtonItem
+        
+        // Loading data
+        load()
     }
     
     // Add Note
     @objc func addNote() {
-        
         // Avoid to add notes if is editing
         if (table.isEditing) {
             return
@@ -41,6 +43,8 @@ class ViewController: UIViewController, UITableViewDataSource {
         data.insert(name, at: 0)
         let indexPath: IndexPath = IndexPath(row: 0, section: 0)
         table.insertRows(at: [indexPath], with: .automatic)
+        
+        save()
     }
     
     // Editing
@@ -53,6 +57,23 @@ class ViewController: UIViewController, UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         data.remove(at: indexPath.row)
         table.deleteRows(at: [indexPath], with: .fade)
+        
+        save()
+    }
+    
+    func save() {
+        // UserDefaults
+        UserDefaults.standard.set(data, forKey: "Notes")
+        UserDefaults.standard.synchronize()
+        
+    }
+    
+    func load() {
+        // UserDefaults
+        if let loadedData = UserDefaults.standard.value(forKey: "Notes") as? [String] {
+            data = loadedData
+            table.reloadData()
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
