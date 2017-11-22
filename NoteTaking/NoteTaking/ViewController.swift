@@ -13,6 +13,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     @IBOutlet weak var table: UITableView!
     
     var data: [String] = []
+    var selectedRow: Int = -1
     var file: String!
     
     override func viewDidLoad() {
@@ -47,7 +48,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         data.insert(name, at: 0)
         let indexPath: IndexPath = IndexPath(row: 0, section: 0)
         table.insertRows(at: [indexPath], with: .automatic)
-        
+        table.selectRow(at: indexPath, animated: true, scrollPosition: .none)
         self.performSegue(withIdentifier: "detail", sender: nil)
     }
     
@@ -106,6 +107,13 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     // didSelectRowAt
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.performSegue(withIdentifier: "detail", sender: nil)
+    }
+    
+    // prepare segue
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let detailView: DetailViewController = segue.destination as! DetailViewController
+        selectedRow = table.indexPathForSelectedRow!.row
+        detailView.setText(t: data[selectedRow])
     }
 
     override func didReceiveMemoryWarning() {
