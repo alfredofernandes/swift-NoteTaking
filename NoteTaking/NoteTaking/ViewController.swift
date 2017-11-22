@@ -17,7 +17,6 @@ class ViewController: UIViewController, UITableViewDataSource {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
         
         // Title
         self.title = "Notes"
@@ -31,7 +30,7 @@ class ViewController: UIViewController, UITableViewDataSource {
         
         // Saving on the File
         let docsDir = NSSearchPathForDirectoriesInDomains(.documentDirectory, .allDomainsMask, true)
-        file = docsDir[0].appending("notes.txt")
+        file = docsDir[0].appending("/notes.txt")
         
         // Loading data
         load()
@@ -39,6 +38,7 @@ class ViewController: UIViewController, UITableViewDataSource {
     
     // Add Note
     @objc func addNote() {
+        
         // Avoid to add notes if is editing
         if (table.isEditing) {
             return
@@ -49,6 +49,7 @@ class ViewController: UIViewController, UITableViewDataSource {
         let indexPath: IndexPath = IndexPath(row: 0, section: 0)
         table.insertRows(at: [indexPath], with: .automatic)
         
+        // Saving data
         save()
     }
     
@@ -63,31 +64,32 @@ class ViewController: UIViewController, UITableViewDataSource {
         data.remove(at: indexPath.row)
         table.deleteRows(at: [indexPath], with: .fade)
         
+        // Saving data
         save()
     }
     
     func save() {
-        // UserDefaults
-        //UserDefaults.standard.set(data, forKey: "Notes")
-        //UserDefaults.standard.synchronize()
-        
         // File
         let newData: NSArray = NSArray(array: data)
         newData.write(toFile: file, atomically: true)
         
+        // UserDefaults
+        //UserDefaults.standard.set(data, forKey: "Notes")
+        //UserDefaults.standard.synchronize()
     }
     
     func load() {
+        // File
+        if let loadedData = NSArray(contentsOfFile: file) as? [String] {
+            data = loadedData
+            table.reloadData()
+        }
+        
         // UserDefaults
         //if let loadedData = UserDefaults.standard.value(forKey: "Notes") as? [String] {
         //    data = loadedData
         //    table.reloadData()
         //}
-        
-        if let loadedData = NSArray(contentsOfFile: file) as? [String] {
-            data = loadedData
-            table.reloadData()
-        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
