@@ -21,17 +21,38 @@ class ViewController: UIViewController, UITableViewDataSource {
         // Title
         self.title = "Notes"
         
-        // Add Button
+        // Add Button Item
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNote))
         self.navigationItem.rightBarButtonItem = addButton
+        
+        // Edit Button Item
+        self.navigationItem.leftBarButtonItem = editButtonItem
     }
     
     // Add Note
     @objc func addNote() {
+        
+        // Avoid to add notes if is editing
+        if (table.isEditing) {
+            return
+        }
+        
         let name: String = "Item \(data.count + 1)"
         data.insert(name, at: 0)
         let indexPath: IndexPath = IndexPath(row: 0, section: 0)
         table.insertRows(at: [indexPath], with: .automatic)
+    }
+    
+    // Editing
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        table.setEditing(editing, animated: animated)
+    }
+    
+    // Remove row
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        data.remove(at: indexPath.row)
+        table.deleteRows(at: [indexPath], with: .fade)
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
