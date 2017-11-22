@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITableViewDataSource {
+class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     @IBOutlet weak var table: UITableView!
     
@@ -32,11 +32,10 @@ class ViewController: UIViewController, UITableViewDataSource {
         let docsDir = NSSearchPathForDirectoriesInDomains(.documentDirectory, .allDomainsMask, true)
         file = docsDir[0].appending("/notes.txt")
         
-        // Loading data
-        load()
+        loadData()
     }
     
-    // Add Note
+    // addNote
     @objc func addNote() {
         
         // Avoid to add notes if is editing
@@ -49,26 +48,25 @@ class ViewController: UIViewController, UITableViewDataSource {
         let indexPath: IndexPath = IndexPath(row: 0, section: 0)
         table.insertRows(at: [indexPath], with: .automatic)
         
-        // Saving data
-        save()
+        saveData()
     }
     
-    // Editing
+    // setEditing
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         table.setEditing(editing, animated: animated)
     }
     
-    // Remove row
+    // deleteRows
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         data.remove(at: indexPath.row)
         table.deleteRows(at: [indexPath], with: .fade)
         
-        // Saving data
-        save()
+        saveData()
     }
     
-    func save() {
+    // saveData
+    func saveData() {
         // File
         let newData: NSArray = NSArray(array: data)
         newData.write(toFile: file, atomically: true)
@@ -78,7 +76,8 @@ class ViewController: UIViewController, UITableViewDataSource {
         //UserDefaults.standard.synchronize()
     }
     
-    func load() {
+    // loadedData
+    func loadData() {
         // File
         if let loadedData = NSArray(contentsOfFile: file) as? [String] {
             data = loadedData
@@ -92,14 +91,21 @@ class ViewController: UIViewController, UITableViewDataSource {
         //}
     }
     
+    // numberOfRowsInSection
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return data.count
     }
     
+    // cellForRowAt
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "myCell")!
         cell.textLabel?.text = data[indexPath.row]
         return cell
+    }
+    
+    // didSelectRowAt
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.performSegue(withIdentifier: "detail", sender: nil)
     }
 
     override func didReceiveMemoryWarning() {
