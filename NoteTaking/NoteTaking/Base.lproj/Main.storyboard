@@ -59,7 +59,7 @@
         <!--Note-->
         <scene sceneID="Pbf-fo-nW7">
             <objects>
-                <viewController title="Note" id="lub-Qh-nYx" sceneMemberID="viewController">
+                <viewController title="Note" id="lub-Qh-nYx" customClass="DetailViewController" customModule="NoteTaking" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="hUS-QE-Vgs">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -81,6 +81,9 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="fbR-AR-lbe"/>
                     </view>
+                    <connections>
+                        <outlet property="textView" destination="evS-l9-LWU" id="9Ij-dj-RMy"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fni-WY-Hwr" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

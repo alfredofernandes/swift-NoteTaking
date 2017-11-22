@@ -48,7 +48,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         let indexPath: IndexPath = IndexPath(row: 0, section: 0)
         table.insertRows(at: [indexPath], with: .automatic)
         
-        saveData()
+        self.performSegue(withIdentifier: "detail", sender: nil)
     }
     
     // setEditing
