@@ -14,6 +14,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     var data: [String] = []
     var selectedRow: Int = -1
+    var newRowText: String = ""
     var file: String!
     
     override func viewDidLoad() {
@@ -36,6 +37,33 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         loadData()
     }
     
+    // viewWillAppear
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if selectedRow == -1 {
+            return
+        }
+        data[selectedRow] = newRowText
+        if newRowText == "" {
+            data.remove(at: selectedRow)
+        }
+        table.reloadData()
+        saveData()
+    }
+    
+    // numberOfRowsInSection
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return data.count
+    }
+    
+    // cellForRowAt
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "myCell")!
+        cell.textLabel?.text = data[indexPath.row]
+        return cell
+    }
+    
     // addNote
     @objc func addNote() {
         
@@ -44,7 +72,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             return
         }
         
-        let name: String = "Item \(data.count + 1)"
+        let name: String = ""
         data.insert(name, at: 0)
         let indexPath: IndexPath = IndexPath(row: 0, section: 0)
         table.insertRows(at: [indexPath], with: .automatic)
@@ -66,6 +94,20 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         saveData()
     }
     
+    // didSelectRowAt
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.performSegue(withIdentifier: "detail", sender: nil)
+    }
+    
+    // prepare segue
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        selectedRow = table.indexPathForSelectedRow!.row
+        
+        let detailView: DetailViewController = segue.destination as! DetailViewController
+        detailView.masterView = self
+        detailView.setText(t: data[selectedRow])
+    }
+    
     // saveData
     func saveData() {
         // File
@@ -73,8 +115,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         newData.write(toFile: file, atomically: true)
         
         // UserDefaults
-        //UserDefaults.standard.set(data, forKey: "Notes")
-        //UserDefaults.standard.synchronize()
+//        UserDefaults.standard.set(data, forKey: "Notes")
+//        UserDefaults.standard.synchronize()
     }
     
     // loadedData
@@ -86,34 +128,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
         
         // UserDefaults
-        //if let loadedData = UserDefaults.standard.value(forKey: "Notes") as? [String] {
-        //    data = loadedData
-        //    table.reloadData()
-        //}
-    }
-    
-    // numberOfRowsInSection
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return data.count
-    }
-    
-    // cellForRowAt
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "myCell")!
-        cell.textLabel?.text = data[indexPath.row]
-        return cell
-    }
-    
-    // didSelectRowAt
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.performSegue(withIdentifier: "detail", sender: nil)
-    }
-    
-    // prepare segue
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let detailView: DetailViewController = segue.destination as! DetailViewController
-        selectedRow = table.indexPathForSelectedRow!.row
-        detailView.setText(t: data[selectedRow])
+//        if let loadedData = UserDefaults.standard.value(forKey: "Notes") as? [String] {
+//            data = loadedData
+//            table.reloadData()
+//        }
     }
 
     override func didReceiveMemoryWarning() {
