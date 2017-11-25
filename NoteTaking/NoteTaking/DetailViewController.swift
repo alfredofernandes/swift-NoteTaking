@@ -13,7 +13,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var textView: UITextView!
     
     var text: String = ""
-    var masterView: ViewController!
+    var refToMasterView: ViewController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,7 +33,7 @@ class DetailViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        masterView.newRowText = textView.text
+        refToMasterView.newRowText = textView.text
     }
 
     override func didReceiveMemoryWarning() {

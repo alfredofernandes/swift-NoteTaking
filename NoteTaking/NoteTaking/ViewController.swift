@@ -44,10 +44,12 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         if selectedRow == -1 {
             return
         }
+        
         data[selectedRow] = newRowText
         if newRowText == "" {
             data.remove(at: selectedRow)
         }
+        
         table.reloadData()
         saveData()
     }
@@ -74,9 +76,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         let name: String = ""
         data.insert(name, at: 0)
+        
         let indexPath: IndexPath = IndexPath(row: 0, section: 0)
         table.insertRows(at: [indexPath], with: .automatic)
         table.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+        
         self.performSegue(withIdentifier: "detail", sender: nil)
     }
     
@@ -104,7 +108,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         selectedRow = table.indexPathForSelectedRow!.row
         
         let detailView: DetailViewController = segue.destination as! DetailViewController
-        detailView.masterView = self
+        detailView.refToMasterView = self
         detailView.setText(t: data[selectedRow])
     }
     
